@@ -12,17 +12,17 @@ interface FavoriteDao {
     suspend fun addFavorite(favorite: Favorite): Long
 
     @Delete
-    suspend fun removeFavorite(favorite: Favorite): Long
+    suspend fun removeFavorite(favorite: Favorite): Int
 
     @Transaction
     @Insert
-    suspend fun addProduct(favoriteProductAssociation: FavoriteProductAssociation): LiveData<Long>
+    fun addProduct(favoriteProductAssociation: FavoriteProductAssociation): Long
 
     @Transaction
     @Delete
-    suspend fun removeProduct(favoriteProductAssociation: FavoriteProductAssociation): LiveData<Long>
+    fun removeProduct(favoriteProductAssociation: FavoriteProductAssociation): Int
 
     @Transaction
     @Query("SELECT * FROM favoriteProductAssociation WHERE favorite_id=:favoriteId")
-    suspend fun getProducts(favoriteId: Long): LiveData<FavoriteProductRelation>
+    fun getProducts(favoriteId: Long): LiveData<FavoriteProductRelation>
 }

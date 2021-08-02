@@ -1,8 +1,9 @@
 plugins {
     id 'com.android.application'
     id 'kotlin-android'
-    id 'dagger.hilt.android.plugin'
+    //id 'dagger.hilt.android.plugin'
     id 'kotlin-kapt'
+    id 'androidx.navigation.safeargs'
 }
 
 android {
@@ -61,17 +62,16 @@ dependencies {
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.2"
 
     //Hilt
-    implementation "com.google.dagger:hilt-android:2.31.2-alpha"
+    //implementation "com.google.dagger:hilt-android:2.31.2-alpha"
     //implementation "androidx.hilt:hilt-lifecycle-viewmodel:2.31.2-alpha"
-    kapt "androidx.hilt:hilt-compiler:2.31.2-alpha"
-    kapt "com.google.dagger:hilt-android-compiler::2.31.2-alpha"
+    //kapt "androidx.hilt:hilt-compiler:2.31.2-alpha"
+    //kapt "com.google.dagger:hilt-android-compiler::2.31.2-alpha"
+
+    implementation "androidx.work:work-runtime-ktx:2.5.0"
+
 
     testImplementation 'junit:junit:4.+'
-    testImplementation 'io.cucumber:cucumber-java8:6.10.4'
-    testImplementation 'io.cucumber:cucumber-junit:6.10.4'
     androidTestImplementation 'androidx.test:runner:1.1.0'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
-    androidTestImplementation 'info.cukes:cucumber-android:2.0.0'
-    androidTestImplementation 'info.cukes:cucumber-picocontainer:2.0.0'
 }

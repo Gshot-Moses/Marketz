@@ -4,23 +4,34 @@ import androidx.lifecycle.LiveData
 import androidx.room.*
 import com.gshot.step.model.Cart
 import com.gshot.step.model.CartProductAssociation
+import com.gshot.step.model.Product
 import com.gshot.step.model.relation.CartProductRelation
 
 @Dao
-interface CartDao {
+abstract class CartDao {
 
     @Insert
-    suspend fun addCart(cart: Cart): Long
+    abstract fun addCart(cart: Cart): Long
+
+    @Query("SELECT * FROM carts WHERE user_id=:userId")
+    abstract fun getCartWithUserId(userId: Long): Cart?
 
     @Transaction
-    @Query("SELECT * FROM cartProductAssociation WHERE cart_id=:cartId")
-    suspend fun getProducts(cartId: Long): LiveData<CartProductRelation>
+    @Query("SELECT * FROM carts")
+    abstract fun getProducts(): LiveData<List<CartProductRelation>>
+
+    @Query("SELECT * FROM cartProductAssociation WHERE product_id=:productId")
+    abstract fun isProductInCart(productId: Long): CartProductAssociation?
 
     @Transaction
-    @Insert
-    suspend fun addProductToCart(cartProductAssociation: CartProductAssociation): LiveData<Long>
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    abstract fun addProductToCart(cartProductAssociation: CartProductAssociation): Long
+
+    @Transaction
+    @Query("UPDATE cartProductAssociation SET qty=:qty WHERE cart_id=:cartId")
+    abstract fun updateProductQuantity(qty: Int, cartId: Int)
 
     @Transaction
     @Delete
-    suspend fun removeProductFromCart(cartProductAssociation: CartProductAssociation): LiveData<Long>
+    abstract fun removeProductFromCart(cartProductAssociation: CartProductAssociation): Int
 }

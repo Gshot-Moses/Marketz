@@ -3,21 +3,24 @@ package com.gshot.step.dao
 import androidx.lifecycle.LiveData
 import androidx.room.*
 import com.gshot.step.model.Category
-import com.gshot.step.model.relation.CategoryProductRelation
+import com.gshot.step.model.Product
 
 @Dao
 interface CategoryDao {
 
     @Insert
-    suspend fun addCategory(category: Category): Long
+    fun addCategory(category: Category): Long
+
+    @Insert
+    suspend fun addCategories(categories: List<Category>)
 
     @Delete
-    suspend fun removeCategory(category: Category): Long
+    suspend fun removeCategory(category: Category): Int
 
     @Query("SELECT * FROM category")
-    suspend fun getCategories(): LiveData<List<Category>>
+    fun getCategories(): LiveData<List<Category>>
 
     @Transaction
     @Query("SELECT * FROM products WHERE category_id=:categoryId")
-    suspend fun getProducts(categoryId: Int): LiveData<CategoryProductRelation>
+    fun getProducts(categoryId: Int): LiveData<List<Product>>
 }

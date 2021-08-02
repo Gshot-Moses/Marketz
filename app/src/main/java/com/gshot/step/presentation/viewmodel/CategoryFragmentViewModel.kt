@@ -1,24 +1,22 @@
 package com.gshot.step.presentation.viewmodel
 
 import android.app.Application
-import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import com.gshot.step.database.AppDatabase
-import com.gshot.step.model.Category
-import com.gshot.step.repo.Repository
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import com.gshot.step.data.Repository
 
 class CategoryFragmentViewModel(application: Application): AndroidViewModel(application) {
 
-    lateinit var categories: LiveData<List<Category>>
+    //var _categories: MutableLiveData<List<Category>> = MutableLiveData()
+    //var categories: LiveData<List<Category>> = _categories
     val database = AppDatabase.getInstance(application.applicationContext)
     val repo = Repository(database.getCategoryDao(), database.getCartDao(), database.getFavoriteDao())
 
-    init {
-        viewModelScope.launch(Dispatchers.IO) {
-            categories = repo.getCategories()
-        }
-    }
+    //init {
+        //viewModelScope.launch(Dispatchers.IO) {
+        //    _categories.postValue(repo.getCategories().value)
+        //}
+    //}
+
+    fun getAll() = repo.getCategories()
 }

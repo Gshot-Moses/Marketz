@@ -14,36 +14,47 @@ import com.gshot.step.model.Category
 class CategoryAdapter: ListAdapter<Category, CategoryAdapter.ViewHolder>(DIFF) {
 
     private var categoryList = emptyList<Category>()
+    private lateinit var listener: (id: Int) -> Unit
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.category_item, parent, false))
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bindData(getItem(position))
+        holder.bindData(categoryList[position])
+        holder.itemView.setOnClickListener { listener.invoke(categoryList[position].id.toInt()) }
     }
 
     override fun getItemCount(): Int {
         return categoryList.size
     }
 
-    fun setData(categories: List<Category>) {
-        categoryList = categories
+    fun setItemClickedListener(listener: (id: Int) -> Unit) {
+        this.listener = listener
     }
 
-    class ViewHolder(val view: View): RecyclerView.ViewHolder(view) {
+    fun setData(categories: List<Category>) {
+        categoryList = categories
+        notifyDataSetChanged()
+    }
+
+    class ViewHolder(view: View): RecyclerView.ViewHolder(view) {
 
         val categoryTextView: TextView
         val categoryCard: CardView
 
         init {
-            categoryTextView = view.findViewById<TextView>(R.id.categoryName)
-            categoryCard = view.findViewById<CardView>(R.id.categoryCard)
+            categoryTextView = view.findViewById(R.id.categoryName)
+            categoryCard = view.findViewById(R.id.categoryCard)
         }
 
         fun bindData(category: Category) {
             categoryTextView.text = category.name
         }
+    }
+
+    interface OnItemClicked {
+        fun onClicked(id: Int)
     }
 }
 
