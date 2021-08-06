@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.gshot.step.R
-import com.gshot.step.model.Product
+import com.gshot.step.presentation.model.Product
 
 class ProductAdapter: ListAdapter<Product, ProductAdapter.ViewHolder>(DIFFPRODUCT) {
 
@@ -50,8 +50,8 @@ class ProductAdapter: ListAdapter<Product, ProductAdapter.ViewHolder>(DIFFPRODUC
         }
 
         fun bind(product: Product) {
-            productTitle.text = product.productName
-            productPrice.text = product.productPrice.toString()
+            productTitle.text = product.name
+            productPrice.text = product.price
         }
     }
 }

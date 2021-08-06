@@ -69,7 +69,7 @@
         android:label="ProductDetailsFragment"
         tools:layout="@layout/fragment_product_details">
         <argument android:name="product"
-            app:argType="com.gshot.step.model.Product"/>
+            app:argType="com.gshot.step.presentation.model.Product"/>
         <action
             android:id="@+id/action_productDetailsFragment_to_signInFragment"
             app:destination="@id/signInFragment" />

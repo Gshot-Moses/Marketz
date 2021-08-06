@@ -3,49 +3,62 @@ package com.gshot.step.data
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.liveData
 import androidx.lifecycle.map
-import com.gshot.step.dao.CartDao
-import com.gshot.step.dao.CategoryDao
-import com.gshot.step.dao.FavoriteDao
-import com.gshot.step.model.CartProductAssociation
-import com.gshot.step.model.Category
-import com.gshot.step.model.FavoriteProductAssociation
-import com.gshot.step.model.Product
+import com.gshot.step.data.dao.CartDao
+import com.gshot.step.data.dao.CategoryDao
+import com.gshot.step.data.dao.FavoriteDao
+import com.gshot.step.data.dao.UserDao
+import com.gshot.step.data.entity.*
+import com.gshot.step.data.entity.relation.CartProductRelation
 
-class Repository(val categoryDao: CategoryDao, val cartDao: CartDao, val favoriteDao: FavoriteDao) {
+class Repository(val categoryDao: CategoryDao, val cartDao: CartDao, val userDao: UserDao) {
+
+    fun addCategory(category: Category) = categoryDao.addCategory(category)
+
+    fun addProduct(product: Product) = categoryDao.addProduct(product)
 
     fun getCategories(): LiveData<List<Category>> {
         return categoryDao.getCategories()
     }
 
+    fun getCategoryWithId(categoryId: Long) = categoryDao.getCategoryWithId(categoryId)
+
     fun getProductsFromCategory(categoryId: Int): LiveData<List<Product>> {
         return categoryDao.getProducts(categoryId)
     }
 
-    suspend fun addProductToCart(productId: Long, cartId: Long, qty: Int): LiveData<Long> = liveData {
+    fun createCart(userId: Long) {
+        cartDao.addCart(Cart(0, userId))
+    }
+
+    fun getCartWithUserId(userId: Long) = cartDao.getCartWithUserId(userId)
+
+    fun getCartWithId(cartId: Long) = cartDao.getCartWithId(cartId)
+
+    fun addProductToCart(productId: Long, cartId: Long, qty: Int) {
         val association = CartProductAssociation(cartId, productId, qty)
-        emit(cartDao.addProductToCart(association))
+        cartDao.addProductToCart(association)
     }
 
-    suspend fun removeProductFromCart(productId: Long, cartId: Long, qty: Int): LiveData<Int> = liveData {
+    fun updateProductQuantity(qty: Int, cartId: Int) {
+        cartDao.updateProductQuantity(qty, cartId)
+    }
+
+    fun removeProductFromCart(productId: Long, cartId: Long, qty: Int) {
         val association = CartProductAssociation(cartId, productId, qty)
-        emit(cartDao.removeProductFromCart(association))
+        cartDao.removeProductFromCart(association)
     }
 
-    fun getProductsFromCart(cartId: Long): LiveData<List<Product>> {
-        return cartDao.getProducts(cartId)
+    fun isProductInCart(productId: Long): CartProductAssociation? {
+        return cartDao.isProductInCart(productId)
     }
 
-    suspend fun addProductToFavorites(productId: Long, favoriteId: Long): LiveData<Long> = liveData {
-        val association = FavoriteProductAssociation(favoriteId, productId)
-        emit(favoriteDao.addProduct(association))
+    fun getProductsFromCart(): List<CartProductRelation> {
+        return cartDao.getProducts()
     }
 
-    suspend fun removeProductFromFavorites(productId: Long, favoriteId: Long): LiveData<Int> = liveData {
-        val association = FavoriteProductAssociation(favoriteId, productId)
-        emit(favoriteDao.removeProduct(association))
-    }
+    fun getUserWithId(userId: Long) = userDao.getUserWithId(userId)
 
-    fun getProductsFromFavorites(favoriteId: Long): LiveData<List<Product>> {
-        return favoriteDao.getProducts(favoriteId).map { it.products }
-    }
+    fun getUserWithEmailAndPassword(email: String, password: String) = userDao.getUser(email, password)
+
+    fun addUser(user: User) = userDao.addUser(user)
 }

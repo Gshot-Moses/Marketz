@@ -67,13 +67,7 @@ class ProductFragment: Fragment() {
                 true
             }
             R.id.cart_menu -> {
-                if (Utils.cart != null) {
-                    val bundle = Bundle()
-                    bundle.putInt("cartId", Utils.cart!!.id!!.toInt())
-                    findNavController().navigate(R.id.action_productFragment_to_cartFragment, bundle)
-                }
-                else
-                    findNavController().navigate(R.id.action_productFragment_to_cartFragment)
+                findNavController().navigate(R.id.action_productFragment_to_cartFragment)
                 true
             }
             else -> super.onOptionsItemSelected(item)

@@ -12,7 +12,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.gshot.step.R
-import com.gshot.step.model.Category
+import com.gshot.step.domain.model.Category
 import com.gshot.step.presentation.viewmodel.AddViewModel
 
 class AddCategoryFragment: Fragment() {

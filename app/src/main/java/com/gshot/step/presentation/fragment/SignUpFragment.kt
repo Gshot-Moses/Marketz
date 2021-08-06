@@ -2,6 +2,7 @@ package com.gshot.step.presentation.fragment
 
 import android.os.Bundle
 import android.text.TextUtils
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,13 +10,18 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
-import com.gshot.step.domain.AuthenticationService
+import com.gshot.step.domain.service.UserService
 import com.gshot.step.R
 import com.gshot.step.Utils
+import com.gshot.step.presentation.viewmodel.SharedViewModel
+import com.gshot.step.presentation.viewmodel.SignUpFragmentViewModel
 
 class SignUpFragment: Fragment() {
 
+    private val viewModel: SignUpFragmentViewModel by viewModels()
+    private val sharedViewModel: SharedViewModel by viewModels()
     var fragmentView: View? = null
 
     override fun onCreateView(
@@ -33,9 +39,18 @@ class SignUpFragment: Fragment() {
             val email = emailEt.text.toString()
             val password = passwordEt.text.toString()
             if (!TextUtils.isEmpty(username) || !TextUtils.isEmpty(email) || !TextUtils.isEmpty(password)) {
-                val user = AuthenticationService.getInstance(requireContext()).signUp(username, email, password)
+                val user = viewModel.signUp(username, email, password)
                 if (user != null) {
                     Utils.currentUser = user
+                    if (!sharedViewModel.checkCart(Utils.currentUser!!.id)) {
+                        val cart = sharedViewModel.createCart(Utils.currentUser!!.id)
+                        Log.d("cart", "$cart")
+                        Utils.cart = cart
+                    }
+                    else {
+                        val cart = sharedViewModel.getCart(Utils.currentUser!!.id)
+                        Utils.cart = cart
+                    }
                     findNavController().navigate(R.id.action_signUpFragment_to_categoryFragment)
                 }
                 else

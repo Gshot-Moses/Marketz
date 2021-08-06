@@ -9,14 +9,16 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
-import com.gshot.step.domain.CartService
 import com.gshot.step.R
 import com.gshot.step.Utils
-import com.gshot.step.model.Product
+import com.gshot.step.presentation.model.Product
+import com.gshot.step.presentation.viewmodel.ProductDetailsFragmentViewModel
 
 class ProductDetailsFragment: Fragment() {
 
+    private val viewModel: ProductDetailsFragmentViewModel by viewModels()
     private var fragmentView: View? = null
     private var product: Product? = null
 
@@ -28,18 +30,14 @@ class ProductDetailsFragment: Fragment() {
         fragmentView = inflater.inflate(R.layout.fragment_product_details, container, false)
         val titleTv = fragmentView!!.findViewById<TextView>(R.id.product_name)
         val addToCartBtn = fragmentView!!.findViewById<Button>(R.id.cart_btn)
-        titleTv.text = product!!.productName
+        titleTv.text = product!!.name
         addToCartBtn.setOnClickListener {
-            if (Utils.currentUser == null)
-                createDialog().show()
+            if (viewModel.isProductInCart(product!!.id)) {
+                Toast.makeText(requireContext(), "Product already in cart", Toast.LENGTH_SHORT).show()
+            }
             else {
-                if (CartService.getInstance(requireContext()).isProductInCart(product!!)) {
-                    Toast.makeText(requireContext(), "Product already in cart", Toast.LENGTH_SHORT).show()
-                }
-                else {
-                    CartService.getInstance(requireContext()).addProductToCart(product!!, 1, Utils.currentUser!!.id)
-                    Toast.makeText(requireContext(), "Product added to cart", Toast.LENGTH_SHORT).show()
-                }
+                viewModel.addProductToCart(product!!.id, 1, Utils.currentUser!!.id)
+                Toast.makeText(requireContext(), "Product added to cart", Toast.LENGTH_SHORT).show()
             }
         }
         return fragmentView

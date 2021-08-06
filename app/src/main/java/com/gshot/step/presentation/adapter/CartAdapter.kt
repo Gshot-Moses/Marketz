@@ -5,13 +5,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.gshot.step.R
-import com.gshot.step.Utils
-import com.gshot.step.domain.CartService
-import com.gshot.step.model.Product
+import com.gshot.step.presentation.model.Product
 
 class CartAdapter: ListAdapter<Product, CartAdapter.ViewHolder>(DIFFPRODUCT) {
 
@@ -31,13 +28,14 @@ class CartAdapter: ListAdapter<Product, CartAdapter.ViewHolder>(DIFFPRODUCT) {
             holder.qtyTv.text = qty.toString()
         }
         holder.reduce.setOnClickListener {
-            val qty = holder.qtyTv.text.toString().toInt()
+            var qty = holder.qtyTv.text.toString().toInt()
             if (qty == 1) {
                 removeProductFromCartListener.invoke(productList[position])
                 productList.removeAt(position)
                 notifyItemRemoved(position)
             } else {
-                updateListener.invoke(qty - 1)
+                qty -= 1
+                updateListener.invoke(qty)
                 holder.qtyTv.text = qty.toString()
             }
         }
@@ -77,7 +75,7 @@ class CartAdapter: ListAdapter<Product, CartAdapter.ViewHolder>(DIFFPRODUCT) {
         }
 
         fun bind(product: Product) {
-            nameTv.text = product.productName
+            nameTv.text = product.name
         }
     }
 }

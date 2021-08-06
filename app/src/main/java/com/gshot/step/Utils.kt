@@ -1,7 +1,7 @@
 package com.gshot.step
 
-import com.gshot.step.model.Cart
-import com.gshot.step.model.User
+import com.gshot.step.presentation.model.Cart
+import com.gshot.step.presentation.model.User
 
 class Utils {
 

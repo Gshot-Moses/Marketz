@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.gshot.step.R
-import com.gshot.step.model.Category
+import com.gshot.step.presentation.model.Category
 
 class CategoryAdapter: ListAdapter<Category, CategoryAdapter.ViewHolder>(DIFF) {
 
@@ -22,7 +22,7 @@ class CategoryAdapter: ListAdapter<Category, CategoryAdapter.ViewHolder>(DIFF) {
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.bindData(categoryList[position])
-        holder.itemView.setOnClickListener { listener.invoke(categoryList[position].id.toInt()) }
+        holder.itemView.setOnClickListener { listener.invoke(categoryList[position].id) }
     }
 
     override fun getItemCount(): Int {
@@ -51,10 +51,6 @@ class CategoryAdapter: ListAdapter<Category, CategoryAdapter.ViewHolder>(DIFF) {
         fun bindData(category: Category) {
             categoryTextView.text = category.name
         }
-    }
-
-    interface OnItemClicked {
-        fun onClicked(id: Int)
     }
 }
 

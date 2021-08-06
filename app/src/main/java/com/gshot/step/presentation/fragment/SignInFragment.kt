@@ -11,14 +11,19 @@ import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
-import com.gshot.step.domain.AuthenticationService
+import com.gshot.step.domain.service.UserService
 import com.gshot.step.R
 import com.gshot.step.Utils
-import com.gshot.step.domain.CartService
+import com.gshot.step.domain.service.CartService
+import com.gshot.step.presentation.viewmodel.SharedViewModel
+import com.gshot.step.presentation.viewmodel.SignInFragmentViewModel
 
 class SignInFragment: Fragment() {
 
+    private val viewModel: SignInFragmentViewModel by viewModels()
+    private val sharedViewModel: SharedViewModel by viewModels()
     private var fragmentView: View? = null
 
     override fun onCreateView(
@@ -28,7 +33,6 @@ class SignInFragment: Fragment() {
     : View? {
         fragmentView = inflater.inflate(R.layout.fragment_sign_in, container, false)
         val signUpText = fragmentView!!.findViewById<TextView>(R.id.sign_up_text)
-        val authService = AuthenticationService.getInstance(requireContext())
         val emailEt = fragmentView!!.findViewById<EditText>(R.id.email)
         val passwordEt = fragmentView!!.findViewById<EditText>(R.id.password)
         val signInBtn = fragmentView!!.findViewById<Button>(R.id.sign_in_btn)
@@ -39,16 +43,16 @@ class SignInFragment: Fragment() {
             val email = emailEt.text.toString()
             val password = passwordEt.text.toString()
             if (!TextUtils.isEmpty(email) || !TextUtils.isEmpty(password)) {
-                val user = authService.signIn(email, password)
+                val user = viewModel.signIn(email, password)
                 if (user != null) {
                     Utils.currentUser = user
-                    if (!CartService.getInstance(requireContext()).checkCart(Utils.currentUser!!.id)) {
-                        val cart = CartService.getInstance(requireContext()).createCart(Utils.currentUser!!.id)
-                        Log.d("cart", "${cart}")
+                    if (!sharedViewModel.checkCart(Utils.currentUser!!.id)) {
+                        val cart = sharedViewModel.createCart(Utils.currentUser!!.id)
+                        Log.d("cart", "$cart")
                         Utils.cart = cart
                     }
                     else {
-                        val cart = CartService.getInstance(requireContext()).getCart(Utils.currentUser!!.id!!)
+                        val cart = sharedViewModel.getCart(Utils.currentUser!!.id)
                         Utils.cart = cart
                     }
                     findNavController().navigate(R.id.action_signInFragment_to_categoryFragment)

@@ -39,7 +39,7 @@ class CategoryFragment: Fragment() {
         }
         categoryViewModel.getAll().observe(viewLifecycleOwner, {
             if (it != null) {
-                if (!it.isEmpty()) {
+                if (it.isNotEmpty()) {
                     adapter.setData(it)
                     Toast.makeText(requireContext(), "Not empty", Toast.LENGTH_SHORT).show()
                 }

@@ -6,8 +6,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -15,8 +13,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.gshot.step.R
 import com.gshot.step.Utils
-import com.gshot.step.domain.CartService
-import com.gshot.step.model.Product
 import com.gshot.step.presentation.adapter.CartAdapter
 import com.gshot.step.presentation.viewmodel.CartFragmentViewModel
 
@@ -38,18 +34,16 @@ class CartFragment: Fragment() {
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
         recyclerView.adapter = adapter
         adapter.setQtyUpdateListener {
-            CartService.getInstance(requireContext()).updateProductQty(it, Utils.cart!!.id!!.toInt())
+            viewModel.updateProductQty(it, Utils.cart!!.id)
         }
         adapter.setOnRemoveProductCartFromCartListener {
-            CartService.getInstance(requireContext()).removeProductFromCart(it)
+            viewModel.removeProductFromCart(Utils.cart!!.id, it.id, 1)
         }
-        viewModel.getProducts().observe(viewLifecycleOwner, {
+        viewModel.getProducts(Utils.cart!!.id).observe(viewLifecycleOwner, {
             if (it != null) {
-                val array = it.stream().filter { it.cart!!.id == Utils.cart!!.id!!.toLong() }.map { it.products }.toArray().asList()
                 Log.d("cart", "${it.size}")
-                Log.d("cart", "${it[0]}")
                 //Log.d("cart", "${array}")
-                adapter.setData(array[0] as List<Product>)
+                adapter.setData(it)
             }
         })
         return fragmentView
